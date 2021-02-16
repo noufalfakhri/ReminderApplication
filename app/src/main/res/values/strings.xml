@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Reminder Application</string>
+    <string name="Title">Reminders</string>
+    <string name="EmptyReminder">No Reminders</string>
+    <string name="CreateReminder">Create Reminder</string>
+
+    <string name="Back">Back</string>
+    <string name="TitleLabel">Reminder Name</string>
+    <string name="placeholder">Buy Grocery</string>
+    <string name="DateTimeLabel">Date and Time</string>
+    <string name="DateSample">dd/mm/yyyy</string>
+    <string name="TimeSample">hh/mm</string>
+
+    <string name="PriorityLabel">Priority</string>
+    <string name="HighPriority">High</string>
+    <string name="LowPriority">Low</string>
+
+    <string name="saveReminder">Save Reminder</string>
+
+
+</resources>
