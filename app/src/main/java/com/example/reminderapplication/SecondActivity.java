@@ -8,19 +8,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.sql.Time;
 import java.util.Calendar;
 
 public class SecondActivity extends AppCompatActivity {
-    Button backbuttonView;
+    Button backbuttonView, saveButtonView;
     private DatePicker datePicker;
     private TimePicker timePicker;
+    private EditText titlen;
+    private String tit;
 
     private Calendar calendar;
     private TextView dateView;
@@ -46,6 +52,15 @@ public class SecondActivity extends AppCompatActivity {
         showTime(hour, min);
         showDate(year, month+1, day);
 
+        //Save Button
+        saveButtonView = (Button) findViewById(R.id.saveReminderButton);
+        titlen = (EditText) findViewById(R.id.editDate);
+        saveButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tit = titlen.getText().toString();
+            }
+        });
 
         //Back button
         backbuttonView = (Button) findViewById(R.id.backbutton);

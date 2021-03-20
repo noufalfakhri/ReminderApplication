@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class MainActivity extends AppCompatActivity {
     Button buttonView;
     @Override
@@ -15,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         buttonView = (Button) findViewById(R.id.createReminder);
+
+       
+
+
         buttonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
