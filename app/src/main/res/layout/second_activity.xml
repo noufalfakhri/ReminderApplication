@@ -10,8 +10,8 @@
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="28dp"
         android:text="@string/Title"
         android:textColor="#673AB7"
         android:textSize="30sp"
@@ -23,13 +23,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="508dp"
+        android:layout_marginTop="592dp"
         android:text="@string/Back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editDate"
+        android:id="@+id/editTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="180dp"
@@ -60,7 +60,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <Button
+        android:id="@+id/deleteTaskButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="256dp"
+        android:layout_marginBottom="28dp"
+        android:text="@string/DeleteTask"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <RadioGroup
+        android:id="@+id/PriorityRadioGroup"
         android:layout_width="158dp"
         android:layout_height="118dp"
         android:layout_marginStart="148dp"

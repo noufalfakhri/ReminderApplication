@@ -3,6 +3,8 @@
     <string name="Title">Reminders</string>
     <string name="EmptyReminder">No Reminders</string>
     <string name="CreateReminder">Create Reminder</string>
+    <string name="DeleteTask">Delete Task</string>
+
 
     <string name="Back">Back</string>
     <string name="TitleLabel">Reminder Name</string>
