@@ -3,7 +3,10 @@ package com.example.reminderapplication;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 //
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
@@ -32,7 +36,8 @@ public class SecondActivity extends AppCompatActivity {
     private TimePicker timePicker;
     private EditText titleView;
     private String tit;
-    private int importance;
+
+    public int importance;
     private RadioGroup radioGroup;
     private RadioButton highPriority , lowPriority;
     DatabaseHelper db;
@@ -72,11 +77,16 @@ public class SecondActivity extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
+
         if(extras !=null) {
             int Value = extras.getInt("id");
-            if(Value>0){
-                //means this is the view part not the add contact part.
 
+            if (Value == 0 )
+                deleteTaskView.setVisibility(View.GONE);
+
+            if(Value>0){
+
+                //means this is the view part not the add contact part.
 
                 Cursor rs = db.retrieveTask(Value);
                 id  = Value;
@@ -85,8 +95,8 @@ public class SecondActivity extends AppCompatActivity {
                 String title = rs.getString(rs.getColumnIndex(DatabaseHelper.col_2));
                 String time = rs.getString(rs.getColumnIndex(DatabaseHelper.col_3));
                 String date = rs.getString(rs.getColumnIndex(DatabaseHelper.col_4));
-                Integer importance = rs.getInt(rs.getColumnIndex(DatabaseHelper.col_5));
-
+                importance = rs.getInt(rs.getColumnIndex(DatabaseHelper.col_5));
+                System.out.println(importance);
                 if (!rs.isClosed())  {
                     rs.close();
                 }
@@ -99,28 +109,32 @@ public class SecondActivity extends AppCompatActivity {
                         db.deleteTask(Value);
                         Toast.makeText(getApplicationContext(), "Deleted Successfully",
                                 Toast.LENGTH_SHORT).show();
-                       finish();
+                        finish();
                     }
                 }));
 
                 titleView.setText((CharSequence)title);
-                titleView.setFocusable(false);
+              //  titleView.setFocusable(false);
 
                 dateView.setText((CharSequence)date);
-                dateView.setFocusable(false);
+               // dateView.setFocusable(false);
 
                 timeView.setText((CharSequence)time);
-                timeView.setFocusable(false);
+                System.out.println("importance: " + importance);
+                switch (importance){
+                    case 1: highPriority.setChecked(true);
+                        System.out.println(" high importance: " + importance);
+                        radioGroup.check(R.id.highPriority);
 
-                if(importance ==1)
-                    highPriority.setChecked(true);
-                else
-                if(importance ==0)
-                   lowPriority.setChecked(true);
+                        break;
+                    default: lowPriority.setChecked(true);
+                        radioGroup.check(R.id.lowPriority);
+
+                }
+
 
             }
         }
-
 
         //Save Button
         saveButtonView = (Button) findViewById(R.id.saveReminderButton);
@@ -131,39 +145,41 @@ public class SecondActivity extends AppCompatActivity {
                 String title = titleView.getText().toString();
                 String date = dateView.getText().toString();
                 String time = timeView.getText().toString();
-                int important = radioGroup.getCheckedRadioButtonId() == R.id.lowPriority ? 0 : 1;
+                importance = radioGroup.getCheckedRadioButtonId() == R.id.highPriority? 1:0;
+
                 Bundle extras = getIntent().getExtras();
                 if (extras != null) {
                     int Value = extras.getInt("id");
+                    System.out.println("id value :" + Value);
                     if (Value > 0) { // update task
-                        if (db.updateTask(id, title, time, date, important)) {
+                        System.out.println(importance);
+                        if (db.updateTask(id, title, time, date, importance)) {
+                            setNotification();
                             Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
-                            //Return activity
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
+
                         } else {
                             Toast.makeText(getApplicationContext(), "not Updated", Toast.LENGTH_SHORT).show();
                         }
+                    } else { // add new task
+                        System.out.println("inside adding new task");
+                        System.out.println("title: " + title);
 
 
-                        if (Value == 0) { // add new task
-                            Log.i("s", "onClick: Saving new Reminder");
+                        if (db.insertTask(title, time, date, importance)) {
+                            setNotification();
+                            Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
 
-                            if (db.insertTask(title, time, date, important)) {
-                                Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Not Added", Toast.LENGTH_SHORT).show();
-                            }
-
-                            //Return activity
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Not Added", Toast.LENGTH_SHORT).show();
                         }
                     }
 
+                    finish();
+
+                    }
+
                 }
-            }
+
         });
 
 
@@ -193,19 +209,6 @@ public class SecondActivity extends AppCompatActivity {
 
 
             }
-        });
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // find which radio button is selected
-                if(checkedId == R.id.lowPriority) {
-                    importance =0;
-                } else if(checkedId == R.id.highPriority) {
-                    importance = 1;
-                }
-            }
-
         });
 
     }
@@ -297,4 +300,31 @@ public class SecondActivity extends AppCompatActivity {
                     break;
         }
     }
+
+
+    public void setNotification () {
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent notificationIntent = new Intent(this, SecondActivity.class);
+
+        Bundle dataBundle = new Bundle();
+        dataBundle.putInt("id", id);
+
+
+        notificationIntent.putExtras(dataBundle);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle("Notifications Example")
+                        .setContentText("This is a test notification")
+                        .setContentIntent(contentIntent).setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setAutoCancel(true);
+                ;
+
+        // Add as notification
+        manager.notify(0, builder.build());
+    }
+
 }

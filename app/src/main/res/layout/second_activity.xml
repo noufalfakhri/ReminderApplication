@@ -22,8 +22,8 @@
         android:id="@+id/backbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="592dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="548dp"
         android:text="@string/Back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -64,10 +64,9 @@
         android:id="@+id/deleteTaskButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="256dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginBottom="104dp"
         android:text="@string/DeleteTask"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

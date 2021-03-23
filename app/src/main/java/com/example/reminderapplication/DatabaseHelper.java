@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DatabaseHelper  extends SQLiteOpenHelper {
     public static final String DATABASE_NAME ="Tasks.db";
@@ -40,6 +41,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
     public boolean insertTask (String Title, String Time, String Date, int Importance){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -69,7 +71,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     public Cursor retrieveTask (int id){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from "+TABLE_NAME+ "where id="+id,null);
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME+ " where id="+id+"",null);
         return  res;
     }
 
@@ -81,7 +83,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
 
     public Integer deleteTask (int id){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, "id = ?", new String[] { Integer.toString(id) });
+        return db.delete(TABLE_NAME, " id = ?", new String[] { Integer.toString(id) });
     }
 
     public int numberOfRows(){
@@ -89,8 +91,9 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         int numRows = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
         return numRows;
     }
-    public ArrayList<String> getAllTasks() {
-        ArrayList<String> array_list = new ArrayList<String>();
+    public ArrayList<HashMap<String, String>> getAllTasks() {
+
+        ArrayList<HashMap<String, String>> array_list = new ArrayList<>();
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -98,9 +101,16 @@ public class DatabaseHelper  extends SQLiteOpenHelper {
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            array_list.add(res.getString(res.getColumnIndex(col_2)));
+            HashMap<String,String> task = new HashMap<>();
+           // String task = "Task ID: "+res.getInt(res.getColumnIndex(col_1)) + "\t\t\t Name: "+ res.getString(res.getColumnIndex(col_2))+"";
+            System.out.println(task);
+            task.put("ID",res. getString(res.getColumnIndex(col_1)));
+            task.put("Title",res.getString(res.getColumnIndex(col_2)) );
+
+            array_list.add(task);
             res.moveToNext();
         }
+        System.out.println(array_list);
         return array_list;
     }
 }

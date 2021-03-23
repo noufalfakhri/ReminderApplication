@@ -17,7 +17,7 @@
     <string name="HighPriority">High</string>
     <string name="LowPriority">Low</string>
 
-    <string name="saveReminder">Save Reminder</string>
+    <string name="saveReminder">Save</string>
 
 
 </resources>
