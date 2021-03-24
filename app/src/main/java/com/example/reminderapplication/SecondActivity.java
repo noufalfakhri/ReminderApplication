@@ -1,8 +1,10 @@
 package com.example.reminderapplication;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -31,6 +33,10 @@ import java.sql.Time;
 import java.util.Calendar;
 
 public class SecondActivity extends AppCompatActivity {
+
+    public static final String NOTIFICATION_CHANNEL_ID = "10001" ;
+    private final static String default_notification_channel_id = "default" ;
+
     Button backbuttonView, saveButtonView, deleteTaskView;
     private DatePicker datePicker;
     private TimePicker timePicker;
@@ -154,7 +160,7 @@ public class SecondActivity extends AppCompatActivity {
                     if (Value > 0) { // update task
                         System.out.println(importance);
                         if (db.updateTask(id, title, time, date, importance)) {
-                            setNotification();
+                            scheduleNotification(getNotification( dateView.getText().toString()) , Long.parseLong(timeView.toString())) ;
                             Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
 
                         } else {
@@ -166,7 +172,7 @@ public class SecondActivity extends AppCompatActivity {
 
 
                         if (db.insertTask(title, time, date, importance)) {
-                            setNotification();
+                            scheduleNotification(getNotification( dateView.getText().toString()) , Long.parseLong(timeView.toString())) ;
                             Toast.makeText(getApplicationContext(), "Added", Toast.LENGTH_SHORT).show();
 
                         } else {
@@ -302,29 +308,26 @@ public class SecondActivity extends AppCompatActivity {
     }
 
 
-    public void setNotification () {
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Intent notificationIntent = new Intent(this, SecondActivity.class);
-
-        Bundle dataBundle = new Bundle();
-        dataBundle.putInt("id", id);
-
-
-        notificationIntent.putExtras(dataBundle);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setContentTitle("Notifications Example")
-                        .setContentText("This is a test notification")
-                        .setContentIntent(contentIntent).setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setAutoCancel(true);
-                ;
-
-        // Add as notification
-        manager.notify(0, builder.build());
+    private void scheduleNotification (Notification notification , long delay) {
+        Intent notificationIntent = new Intent( this, NotificationPublisher. class ) ;
+        notificationIntent.putExtra(NotificationPublisher. NOTIFICATION_ID , 1 ) ;
+        notificationIntent.putExtra(NotificationPublisher. NOTIFICATION , notification) ;
+        PendingIntent pendingIntent = PendingIntent. getBroadcast ( this, 0 , notificationIntent , PendingIntent. FLAG_UPDATE_CURRENT ) ;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context. ALARM_SERVICE ) ;
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager. ELAPSED_REALTIME_WAKEUP , delay , pendingIntent) ;
+    }
+    private Notification getNotification (String content) {
+        Intent notifyIntent = new Intent(this, SecondActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder( this, default_notification_channel_id ) ;
+        builder.setContentTitle( "Scheduled Notification" ) ;
+        builder.setContentText(content) ;
+        builder.setSmallIcon(R.drawable. ic_launcher_foreground ) ;
+        builder.setAutoCancel( true ) ;
+        builder.setContentIntent(pendingIntent);
+        builder.setChannelId( NOTIFICATION_CHANNEL_ID ) ;
+        return builder.build() ;
     }
 
 }
