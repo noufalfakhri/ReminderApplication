@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -56,37 +57,41 @@ public class NotificationHelper extends ContextWrapper{
     }
 
     public NotificationCompat.Builder getChannel1Notification(String title,String message, int id ){
-        Intent notificationIntent = new Intent(getApplicationContext() ,  MainActivity. class ) ;
-//        notificationIntent.putExtra( "id" , id ) ;
-//        Bundle dataBundle = new Bundle();
-//        dataBundle.putInt("id", id);
-//        notificationIntent.putExtras(dataBundle);
-       // notificationIntent.putExtra("id",id);
+        Intent notificationIntent = new Intent(getApplicationContext() ,  SecondActivity. class ) ;
+        notificationIntent.putExtra( "id" , id ) ;
+        Bundle dataBundle = new Bundle();
+        dataBundle.putInt("id", id);
+        System.out.println("here in notification intent its: " + id );
+        notificationIntent.putExtras(dataBundle);
+        notificationIntent.putExtra("id",id);
 
         notificationIntent.setFlags(Intent. FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP ) ;
-        PendingIntent pendingIntent = PendingIntent. getActivity ( this, 0 , notificationIntent , 0 ) ;
+        PendingIntent pendingIntent = PendingIntent. getActivity ( this, 0 , notificationIntent ,PendingIntent.FLAG_UPDATE_CURRENT ) ;
 
         return new NotificationCompat.Builder(getApplicationContext(),NOTIFICATION1_ID)
                 .setContentTitle(title)
-                .setContentText(message).setContentIntent(pendingIntent)
+                .setContentText(message)
+                .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_one);
 
     }
 
     public NotificationCompat.Builder getChanne21Notification(String title,String message, int id ){
-        Intent notificationIntent = new Intent(getApplicationContext() ,  MainActivity. class ) ;
-//        notificationIntent.putExtra( "id" , id ) ;
-//        Bundle dataBundle = new Bundle();
-//        dataBundle.putInt("id", id);
-//        //notificationIntent.putExtras("id",id);
-//        notificationIntent.putExtras(dataBundle);
+        Intent notificationIntent = new Intent(getApplicationContext() ,  SecondActivity. class ) ;
+        notificationIntent.putExtra( "id" , id ) ;
+        Bundle dataBundle = new Bundle();
+        System.out.println(id);
+        dataBundle.putInt("id", id);
+        notificationIntent.putExtra("id",id);
+        notificationIntent.putExtras(dataBundle);
 
         notificationIntent.setFlags(Intent. FLAG_ACTIVITY_CLEAR_TOP | Intent. FLAG_ACTIVITY_SINGLE_TOP ) ;
-        PendingIntent pendingIntent = PendingIntent. getActivity ( this, 0 , notificationIntent , 0 ) ;
+        PendingIntent pendingIntent = PendingIntent. getActivity ( this, 0 , notificationIntent , PendingIntent.FLAG_UPDATE_CURRENT ) ;
 
         return new NotificationCompat.Builder(getApplicationContext(),NOTIFICATION2_ID)
                 .setContentTitle(title)
-                .setContentText(message).setContentIntent(pendingIntent)
+                .setContentText(message)
+                .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_two);
 
     }

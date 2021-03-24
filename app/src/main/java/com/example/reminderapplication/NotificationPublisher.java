@@ -1,3 +1,4 @@
+
 package com.example.reminderapplication;
 
 import android.app.Notification;
@@ -6,29 +7,33 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
+import android.app.NotificationManager;
 
-import static com.example.reminderapplication.SecondActivity.NOTIFICATION_CHANNEL_ID;
+import androidx.core.app.NotificationCompat;
+
+//import static com.example.reminderapplication.SecondActivity.getTit();
 public class NotificationPublisher extends BroadcastReceiver {
-    public static String NOTIFICATION_ID = "notification-id" ;
-    public static String NOTIFICATION = "notification" ;
-    public void onReceive (Context context , Intent intent) {
 
-        System.out.println("here");
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context. NOTIFICATION_SERVICE ) ;
-        Notification notification = intent.getParcelableExtra( NOTIFICATION ) ;
-        if (android.os.Build.VERSION. SDK_INT >= android.os.Build.VERSION_CODES. O ) {
-            int importance = NotificationManager. IMPORTANCE_HIGH ;
-            NotificationChannel notificationChannel = new NotificationChannel( NOTIFICATION_CHANNEL_ID , "NOTIFICATION_CHANNEL_NAME" , importance) ;
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(notificationChannel) ;
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        NotificationHelper notificationHelper = new NotificationHelper(context);
+
+        String title = SecondActivity.getTit();
+        int priority = SecondActivity.getImportance();
+
+        int id = SecondActivity.getID();
+        System.out.println("id is"+  id);
+        if(priority==1) {
+            NotificationCompat.Builder nb = notificationHelper.getChannel1Notification(title, "high priority",id);
+            notificationHelper.getManager().notify(1, nb.build());
         }
-        int id = intent.getIntExtra( NOTIFICATION_ID , 0 ) ;
-        assert notificationManager != null;
-        System.out.println("Notification is set ");
+        else {
+            NotificationCompat.Builder nb = notificationHelper.getChanne21Notification(title,"Low priority" ,id);
+            notificationHelper.getManager().notify(2,nb.build());
 
-        notificationManager.notify(id , notification) ;
+        }
     }
+
+
+
 }
-//    public static final String HIGH = "channel_high";
-//    public static final String LOW = "channel_low";
