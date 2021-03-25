@@ -485,6 +485,7 @@ public class SecondActivity extends AppCompatActivity {
 
 
     private Calendar calendar;
+    private Calendar calendar2;
     private TextView dateView;
     private TextView timeView;
 
@@ -507,6 +508,7 @@ public class SecondActivity extends AppCompatActivity {
         highPriority = (RadioButton) findViewById(R.id.lowPriority);
         id =0;
         calendar = Calendar.getInstance();
+        calendar2 = Calendar.getInstance();
 
 
         year = calendar.get(Calendar.YEAR);
@@ -749,11 +751,20 @@ public class SecondActivity extends AppCompatActivity {
 
         timeView.setText(new StringBuilder().append(hour).append(" : ").append(min)
                 .append(" ").append(format));
+
+
+        calendar2.set(Calendar.MINUTE,min);
+        calendar2.set(Calendar.HOUR,hour);
+        calendar2.set(Calendar.SECOND,0);
     }
 
     private void showDate(int year, int month, int day) {
         dateView.setText(new StringBuilder().append(day).append("/")
                 .append(month).append("/").append(year));
+
+        calendar2.set(Calendar.YEAR,year);
+        calendar2.set(Calendar.MONTH,month-1);
+        calendar2.set(Calendar.DAY_OF_MONTH,day);
     }
 
     public void onRadioButtonClicked(View view) {
@@ -820,58 +831,67 @@ public class SecondActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent1 = new Intent(this,NotificationPublisher.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1 ,intent1,0);
-        String time1 = dateView.getText().toString()+" "+timeView.getText().toString().replace(" ", "");
-        intent1.putExtra("id",id);
-        Bundle dataBundle = new Bundle();
-        dataBundle.putInt("id", id);
-        System.out.println(dataBundle.getInt("id"));
-        intent1.putExtras(dataBundle);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
-        Date inputDate;
-        Calendar c1 = Calendar.getInstance();
-        try {
-            inputDate = simpleDateFormat.parse(time1.substring(0,time1.indexOf("PM")));
-            System.out.println(inputDate.getTime());
-            c1 = Calendar.getInstance();
-            c1.setTimeInMillis(inputDate.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+//        String time1 = dateView.getText().toString()+" "+timeView.getText().toString().replace(" ", "");
+//        intent1.putExtra("id",id);
+//        Bundle dataBundle = new Bundle();
+//        dataBundle.putInt("id", id);
+//        System.out.println(dataBundle.getInt("id"));
+//        intent1.putExtras(dataBundle);
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+//
+//        Date inputDate;
+//        Calendar c1 = Calendar.getInstance();
+//        try {
+//            inputDate = simpleDateFormat.parse(time1.substring(0,time1.indexOf("PM")));
+//            System.out.println(inputDate.getTime());
+//            c1 = Calendar.getInstance();
+//            c1.setTimeInMillis(inputDate.getTime());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 //        System.out.println("Setting Alarm: ");
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,c1.getTimeInMillis(),pendingIntent);
+        if (calendar2.before(Calendar.getInstance())) {
+            calendar2.add(Calendar.DATE, 1);
+        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar2.getTimeInMillis(),pendingIntent);
 
     }
 
     public void sendOnChannel2(Calendar c, int id){
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent1 = new Intent(this,NotificationPublisher.class);
-        intent1.putExtra("id",id);
-        Bundle dataBundle = new Bundle();
-        dataBundle.putInt("id", id);
-        System.out.println(dataBundle.getInt("id"));
-        intent1.putExtras(dataBundle);
-                String time1 = dateView.getText().toString()+" "+timeView.getText().toString().replace(" ", "");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,2 ,intent1,0);
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        Intent intent1 = new Intent(this,NotificationPublisher.class);
+//        intent1.putExtra("id",id);
+//        Bundle dataBundle = new Bundle();
+//        dataBundle.putInt("id", id);
+//        System.out.println(dataBundle.getInt("id"));
+//        intent1.putExtras(dataBundle);
+//                String time1 = dateView.getText().toString()+" "+timeView.getText().toString().replace(" ", "");
+//
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+//
+//                Date inputDate;
+//                Calendar c1 = Calendar.getInstance();
+//                try {
+//                    inputDate = simpleDateFormat.parse(time1.substring(0,time1.indexOf("PM")));
+//                    System.out.println(inputDate.getTime());
+//                    c1 = Calendar.getInstance();
+//                    c1.setTimeInMillis(inputDate.getTime());
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-
-                Date inputDate;
-                Calendar c1 = Calendar.getInstance();
-                try {
-                    inputDate = simpleDateFormat.parse(time1.substring(0,time1.indexOf("PM")));
-                    System.out.println(inputDate.getTime());
-                    c1 = Calendar.getInstance();
-                    c1.setTimeInMillis(inputDate.getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1 ,intent1,0);
+       // PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1 ,intent1,0);
 
 //        System.out.println("Setting Alarm: ");
-
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,c1.getTimeInMillis(),pendingIntent);
+        if (calendar2.before(Calendar.getInstance())) {
+            calendar2.add(Calendar.DATE, 1);
+        }
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar2.getTimeInMillis(),pendingIntent);
     }
 
     public static String getTit(){
